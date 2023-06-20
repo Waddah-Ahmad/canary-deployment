@@ -41,11 +41,15 @@ func startProduce(ctx context.Context, cfg *config.AppConfig) {
 		case tick := <-t.C:
 			currentTime := tick.String()
 
+			msg := fmt.Sprintf("{\"time\": \"%s\"}", currentTime)
+
 			_ = p.Produce(context.Background(), kafka.Message{
 				Topic: cfg.Kafka.Topic,
 				Key:   []byte(currentTime),
-				Value: []byte(fmt.Sprintf("{\"time\": \"%s\"}", currentTime)),
+				Value: []byte(msg),
 			})
+
+			fmt.Println("Message produced:" + msg)
 		}
 	}
 }
